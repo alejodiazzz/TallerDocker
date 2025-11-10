@@ -1,34 +1,50 @@
 version: '3.8'
+
 services:
   db:
     image: postgres:14.1-alpine
+    container_name: tallerdocker-db
     restart: always
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=tallerdocker_db
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   servicio-aulas:
     build: ./servicio-aulas
+    container_name: tallerdocker-servicio-aulas
     restart: on-failure
     ports:
-      - '8081:8081'
+      - "8081:8081"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
   servicio-prestamos:
     build: ./servicio-prestamos
+    container_name: tallerdocker-servicio-prestamos
     restart: on-failure
     ports:
-      - '8082:8082'
+      - "8082:8082"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
   servicio-reportes:
     build: ./servicio-reportes
+    container_name: tallerdocker-servicio-reportes
     restart: on-failure
     ports:
-      - '8083:8083'
+      - "8083:8083"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
