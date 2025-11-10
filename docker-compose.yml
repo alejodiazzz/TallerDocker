@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=tallerdocker_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  servicio-aulas:
+    build: ./servicio-aulas
+    restart: on-failure
+    ports:
+      - '8081:8081'
+    depends_on:
+      - db
+  servicio-prestamos:
+    build: ./servicio-prestamos
+    restart: on-failure
+    ports:
+      - '8082:8082'
+    depends_on:
+      - db
+  servicio-reportes:
+    build: ./servicio-reportes
+    restart: on-failure
+    ports:
+      - '8083:8083'
+    depends_on:
+      - db
