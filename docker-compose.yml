@@ -14,13 +14,13 @@ services:
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "user"]
+      test: ["CMD", "pg_isready", "-U", "user", "-d", "tallerdocker_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   servicio-aulas:
-    build: ./servicio-aulas
+    image: dumarmalpica/servicio-aulas:latest   
     container_name: tallerdocker-servicio-aulas
     restart: on-failure
     ports:
@@ -28,9 +28,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tallerdocker_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   servicio-prestamos:
-    build: ./servicio-prestamos
+    image: dumarmalpica/servicio-prestamos:latest
     container_name: tallerdocker-servicio-prestamos
     restart: on-failure
     ports:
@@ -38,9 +43,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tallerdocker_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   servicio-reportes:
-    build: ./servicio-reportes
+    image: dumarmalpica/servicio-reportes:latest
     container_name: tallerdocker-servicio-reportes
     restart: on-failure
     ports:
@@ -48,3 +58,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/tallerdocker_db
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
