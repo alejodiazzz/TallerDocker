@@ -3,6 +3,12 @@ la ia me dio este ejemplo pero no se:
 
 Este manual describe cómo desplegar la aplicación de gestión de préstamos de aulas.
 
+
+## Integrantes
+- Gustavo Alejandro Diaz
+- Luisa Fernanda Alvarez
+- Dumar Hernán Malpica
+
 ## Prerrequisitos
 
 - Docker y Docker Compose instalados.
